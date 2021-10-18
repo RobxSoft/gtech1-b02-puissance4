@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
+
 #define gridX 6
 #define gridY 7
 
@@ -85,7 +86,7 @@ int main(void){
         }
 
         for (;;){
-            printf("%s %i %s","Please select a column between 0 and",gridY," : ");
+            printf("%s %i %s","Please select a column between 1 and",gridY," : ");
             scanf("%d", &value);
             if (value > 7 || value < 1) printf("Please enter a true value\n");
             else {
@@ -96,10 +97,6 @@ int main(void){
         printf("Next round\n");
         emplacementLeft -= 1;
         currentPlayerPlaying = currentPlayerPlaying ^ 1;
-    }
-    int test;
-    if (sscanf("%d", &test) == 1){
-        printf("Nice");
     }
 
     return 1;
