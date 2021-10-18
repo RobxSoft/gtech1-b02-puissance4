@@ -43,10 +43,6 @@ int placeSymbol(x,symbol) {
     return 1;
 }
 
-bool isNumber(char value){
-    
-}
-
 void init(void) {
     for(int x = 0; x<gridX;x++){
         for(int y = 0; y < gridY; y++){
