@@ -85,7 +85,7 @@ int main(void){
         }
 
         for (;;){
-            printf("%s %i %s","Please select a column between 0 and",gridY," : ");
+            printf("%s %i %s","Please select a column between 1 and",gridY," : ");
             scanf("%d", &value);
             if (value > 7 || value < 1) printf("Please enter a true value\n");
             else {
