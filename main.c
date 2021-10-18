@@ -9,22 +9,22 @@ char tokens[] = "ox";
 
 void repeatStr(char str[], int count) {
     for (int i = 0; i < count; i++) {
-        printf("%c", *str);
+        printf("%s", str);
     }
     printf("\n");
 }
 
 void printGrid() {
-    repeatStr("_", gridY);
+    repeatStr("__", gridY);
 
     for(int x = 0; x<gridX;x++){
         for(int y = 0; y < gridY; y++){
-            printf("%c", gameGrid[x][y]);
+            printf("%c ", gameGrid[x][y]);
         }
         printf("\n");
     }
     
-    repeatStr("_", gridY);
+    repeatStr("__", gridY);
 }
 
 int placeSymbol(x,symbol) {
@@ -41,6 +41,10 @@ int placeSymbol(x,symbol) {
         } 
     }
     return 1;
+}
+
+bool isNumber(char value){
+    
 }
 
 void init(void) {
@@ -64,8 +68,12 @@ int main(void){
         emplacementLeft -= 1;
         currentPlayerPlaying = currentPlayerPlaying ^ 1;
         printf("playing : %c\n", tokens[currentPlayerPlaying]);
-        placeSymbol(0,tokens[currentPlayerPlaying]);
+        placeSymbol(1,tokens[currentPlayerPlaying]);
         printGrid();
+    }
+    int test;
+    if (sscanf("%d", &test) == 1){
+        printf("Nice");
     }
 
     return 1;
