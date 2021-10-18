@@ -97,6 +97,10 @@ int main(void){
         emplacementLeft -= 1;
         currentPlayerPlaying = currentPlayerPlaying ^ 1;
     }
+    int test;
+    if (sscanf("%d", &test) == 1){
+        printf("Nice");
+    }
 
     return 1;
 }
