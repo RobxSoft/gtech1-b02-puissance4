@@ -24,19 +24,21 @@ void printGrid() {
 }
 
 int placeSymbol(x,symbol) {
+    if (x > 7 || x < 1 ) return -4;
+    x = x - 1;
     if (x > gridX){
-        return 2; // out of range
+        return -2; // out of range
     }else if(gameGrid[0][x] != '.'){
-        return 0; // full
+        return -3; // full
     }else{
         for (int i = gridX; i >= 0; i--){
             if (gameGrid[i][x] == '.'){
                 gameGrid[i][x] = symbol; // setting symbol
-                break;
+                return i;
             }
         }
     }
-    return 1;
+    return -1;
 }
 
 void init(void) {
@@ -91,20 +93,32 @@ int main(void){
         }
 
         printGrid();
-
+        
+        int value, yValue;
         for (;;){
-            int value;
             printf("%s %i %s","Please select a column between 1 and",gridY," :");
-            scanf("%d", &value);
-            if (value > 7 || value < 1 || placeSymbol(value-1,tokens[currentPlayerPlaying]) == 0) {
-                printf("Please enter a true number\n");
+            if (scanf("%d", &value) == 0){
                 flushstdin();
+                printf("Please enter a true number\n");
+            }
+            yValue = placeSymbol(value,tokens[currentPlayerPlaying]);
+            if (yValue < -1) {
+                printf("Please enter a true number\n");
             }
             else {
                 break;
             }
         }
-        Winner();
+        if (Winner(value-1,yValue) == true) {
+            printGrid();
+            if (currentPlayerPlaying) {
+                printf("%s %s %s","\n\x1b[33m",playerOne,"IS THE WINNER !\033[0;37m\n");
+            }
+            else {
+                printf("%s %s %s","\n\033[0;31m",playerTwo,"IS THE WINNER !\033[0;37m\n");
+            }
+            gameFinished = true;
+        }
         printf("\033[0;34m\n\n█▄░█ █▀▀ ▀▄▀ ▀█▀   █▀█ █▀█ █░█ █▄░█ █▀▄\n█░▀█ ██▄ █░█ ░█░   █▀▄ █▄█ █▄█ █░▀█ █▄▀\033[0;37m\n\n");
         emplacementLeft -= 1;
         currentPlayerPlaying = currentPlayerPlaying ^ 1;

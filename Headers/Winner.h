@@ -1,3 +1,3 @@
 #include <stdbool.h>
 
-bool Winner();
+bool Winner(int placedX,int placedY);
