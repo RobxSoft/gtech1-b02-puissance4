@@ -19,6 +19,11 @@ void printGrid() {
         }
         printf("\n");
     }
+    
+    for(int y = 0; y < gridY; y++){
+        printf("%d ", y+1);
+    }
+    printf("\n");
 
     repeatStr("__", gridY);
 }
@@ -119,7 +124,9 @@ int main(void){
             }
             gameFinished = true;
         }
-        printf("\033[0;34m\n\n█▄░█ █▀▀ ▀▄▀ ▀█▀   █▀█ █▀█ █░█ █▄░█ █▀▄\n█░▀█ ██▄ █░█ ░█░   █▀▄ █▄█ █▄█ █░▀█ █▄▀\033[0;37m\n\n");
+        if(!gameFinished){
+            printf("\033[0;34m\n\n█▄░█ █▀▀ ▀▄▀ ▀█▀   █▀█ █▀█ █░█ █▄░█ █▀▄\n█░▀█ ██▄ █░█ ░█░   █▀▄ █▄█ █▄█ █░▀█ █▄▀\033[0;37m\n\n");
+        }
         emplacementLeft -= 1;
         currentPlayerPlaying = currentPlayerPlaying ^ 1;
     }
