@@ -10,7 +10,7 @@ void repeatStr(char str[], int count) {
     printf("\n");
 }
 
-void printGrid() {
+void printGrid(char **gameGrid, int gridX, int gridY) {
     repeatStr("__", gridY);
 
     for(int x = 0; x<gridX;x++){
@@ -28,15 +28,16 @@ void printGrid() {
     repeatStr("__", gridY);
 }
 
-int placeSymbol(x,symbol) {
-    if (x > 7 || x < 1 ) return -4;
+int placeSymbol(int x, char symbol,char **gameGrid, int gridX, int gridY) {
+    printf("");
+    if (x > gridY || x < 1 ) return -4;
     x = x - 1;
     if (x > gridX){
         return -2; // out of range
     }else if(gameGrid[0][x] != '.'){
         return -3; // full
     }else{
-        for (int i = gridX; i >= 0; i--){
+        for (int i = gridX-1; i >= 0; i--){
             if (gameGrid[i][x] == '.'){
                 gameGrid[i][x] = symbol; // setting symbol
                 return i;
@@ -46,8 +47,9 @@ int placeSymbol(x,symbol) {
     return -1;
 }
 
-void init(void) {
+void init(char **gameGrid, int gridX, int gridY) {
     for(int x = 0; x<gridX;x++){
+        gameGrid[x] = (char *)malloc(gridX * sizeof(char));
         for(int y = 0; y < gridY; y++){
             gameGrid[x][y] = '.';
         }
@@ -59,22 +61,45 @@ void flushstdin() {
   while((c = getchar()) != '\n' && c != EOF){}
 }
 
+int customIntInput(char *question, int min){ //custom int input function that won't stop until the user enter a number which is > to min.
+    int value;
+    for(;;){
+        printf("%s", question);
+        if (scanf("%d", &value) == 0){
+                printf("\nPlease enter a right type of number.\n");
+                flushstdin();
+        }else{
+            if(value<=min){
+                printf("\nPlease enter a right type of number.\n");
+                flushstdin();
+            }else{
+                break;
+            }
+        }
+    }
+    return value;
+}
 
 int main(void){
     bool gameFinished = false;
-    int emplacementLeft = 42;
     int currentPlayerPlaying = 0;
 
-    init();
-
-    //MAIN MENU
-    printf("%s %s %s %s %s %s %s %s","\033[0;35m","\n ▒█▀▀█ ▒█░▒█ ▀█▀ ▒█▀▀▀█ ▒█▀▀▀█ ░█▀▀█ ▒█▄░▒█ ▒█▀▀█ ▒█▀▀▀    ░█▀█░\n",
+     //MAIN MENU
+    printf("%s %s %s %s %s %s %s","\033[0;35m","\n ▒█▀▀█ ▒█░▒█ ▀█▀ ▒█▀▀▀█ ▒█▀▀▀█ ░█▀▀█ ▒█▄░▒█ ▒█▀▀█ ▒█▀▀▀    ░█▀█░\n",
     "▒█▄▄█ ▒█░▒█ ▒█░ ░▀▀▀▄▄ ░▀▀▀▄▄ ▒█▄▄█ ▒█▒█▒█ ▒█░░░ ▒█▀▀▀    █▄▄█▄\n",
-    "▒█░░░ ░▀▄▄▀ ▄█▄ ▒█▄▄▄█ ▒█▄▄▄█ ▒█░▒█ ▒█░░▀█ ▒█▄▄█ ▒█▄▄▄    ░░░█░\n\n","\033[0;36m"," => align 4 tokens and win !","\033[0;37m","\n\nPress any key ton continue...");
-    getchar();
-    
-    
+    "▒█░░░ ░▀▄▄▀ ▄█▄ ▒█▄▄▄█ ▒█▄▄▄█ ▒█░▒█ ▒█░░▀█ ▒█▄▄█ ▒█▄▄▄    ░░░█░\n\n","\033[0;36m"," => align 4 tokens and win !","\033[0;37m\n\n");
 
+    //Custom Grid
+    printf("Grid Customisation : \n\n");
+    int gridX = customIntInput("Enter the amount of row you want to play with (Basic Game : 6) : ",3);
+    flushstdin();
+    int gridY = customIntInput("Enter the amount of column you want to play with (Basic Game : 7x) : ",3);
+
+    int emplacementLeft = gridX*gridY;
+    char **gameGrid = (char **)malloc((gridY) * sizeof(char *)); // generating game grid array
+
+    init(gameGrid, gridX, gridY);
+    
     //PLAYER NAME SELECTION
     char playerOne[15], playerTwo[15];
     for (;;) //Infinite loop without condition to enter
@@ -97,25 +122,26 @@ int main(void){
             printf("%s %s %s","\n\033[0;31m ●",playerTwo,"is playing\033[0;37m\n");
         }
 
-        printGrid();
+        printGrid(gameGrid, gridX, gridY);
         
         int value, yValue;
         for (;;){
+            flushstdin();
             printf("%s %i %s","Please select a column between 1 and",gridY," :");
             if (scanf("%d", &value) == 0){
-                flushstdin();
-                printf("Please enter a true number\n");
-            }
-            yValue = placeSymbol(value,tokens[currentPlayerPlaying]);
-            if (yValue < -1) {
-                printf("Please enter a true number\n");
-            }
-            else {
-                break;
+                printf("\nPlease enter a right type of number.\n");
+            }else{
+                yValue = placeSymbol(value,tokens[currentPlayerPlaying],gameGrid,gridX,gridY);
+                if (yValue < -1) {
+                    printf("Please enter a right type of number.\n");
+                }
+                else {
+                    break;
+                }
             }
         }
-        if (Winner(value-1,yValue) == true) {
-            printGrid();
+        if (Winner(value-1, yValue, gameGrid, gridX, gridY) == true) {
+            printGrid(gameGrid, gridX, gridY);
             if (currentPlayerPlaying) {
                 printf("%s %s %s","\n\x1b[33m",playerOne,"IS THE WINNER !\033[0;37m\n");
             }
@@ -124,12 +150,15 @@ int main(void){
             }
             gameFinished = true;
         }
-        if(!gameFinished){
-            printf("\033[0;34m\n\n█▄░█ █▀▀ ▀▄▀ ▀█▀   █▀█ █▀█ █░█ █▄░█ █▀▄\n█░▀█ ██▄ █░█ ░█░   █▀▄ █▄█ █▄█ █░▀█ █▄▀\033[0;37m\n\n");
-        }
         emplacementLeft -= 1;
+        if(gameFinished == false && emplacementLeft > 0){
+            printf("\033[0;34m\n\n█▄░█ █▀▀ ▀▄▀ ▀█▀   █▀█ █▀█ █░█ █▄░█ █▀▄\n█░▀█ ██▄ █░█ ░█░   █▀▄ █▄█ █▄█ █░▀█ █▄▀\033[0;37m\n\n");
+        }else if(emplacementLeft == 0){
+            printGrid(gameGrid, gridX, gridY);
+            printf("No more emplacement left, no one won this game.\n");
+        }
         currentPlayerPlaying = currentPlayerPlaying ^ 1;
     }
-
+    free(gameGrid);
     return 1;
 }
